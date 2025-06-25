@@ -1,0 +1,44 @@
+# 👉 Node modules
+/node_modules
+
+# 👉 Yarn / Pnpm / Bun
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.pnpm-debug.log*
+
+# 👉 Next.js build output
+/.next/
+out/
+build/
+
+# 👉 Test coverage
+/coverage
+
+# 👉 Env files (一定不能上传)
+.env*
+.env.local
+
+# 👉 System / Editor files
+.DS_Store
+*.swp
+*.log
+*.tsbuildinfo
+.vscode/
+.idea/
+
+# 👉 TypeScript
+next-env.d.ts
+
+# 👉 Firebase / Vercel
+.firebase/
+.vercel/
+firebase-debug.log
+firebase.json
+firestore.indexes.json
+firestore.rules
+storage.rules
