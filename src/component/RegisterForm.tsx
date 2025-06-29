@@ -10,7 +10,6 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { db, storage } from "@/utils/firebaseConfig";
 import { detectFace } from "@/utils/faceAPI";
-import { createWallet } from "@/utils/createWallet";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -49,21 +48,18 @@ const RegisterForm = () => {
     const video = videoRef.current!;
     video.srcObject = stream;
 
-    // 倒计时
     for (let i = 3; i > 0; i--) {
       setCountdown(i);
       await new Promise((r) => setTimeout(r, 1000));
     }
     setCountdown(null);
 
-    // 拍照
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d")!;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // 停止摄像头
     stream.getTracks().forEach((t) => t.stop());
     video.srcObject = null;
 
@@ -77,21 +73,35 @@ const RegisterForm = () => {
       throw new Error("⚠️ 未检测到有效人脸，请正对摄像头重试");
     }
 
-    // 上传照片到 Storage
+    // 先注册后端
+    const response = await fetch("http://localhost:8080/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ic: ic.trim() }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error("❌ 注册后端失败：" + text);
+    }
+    const result = await response.json();
+    console.log("后端注册成功，钱包地址:", result.address);
+
+    // 上传人脸图像
     const imageRef = storageRef(storage, `faces/${ic.trim()}.jpg`);
     await uploadBytes(imageRef, blob);
     const imageUrl = await getDownloadURL(imageRef);
 
-    // 自动创建钱包
-    const { privateKey, walletAddress } = await createWallet();
+    // 合并写入 firestore
+    await setDoc(
+      doc(db, "users", ic.trim()),
+      {
+        faceImageUrl: imageUrl,
+      },
+      { merge: true }
+    );
 
-    // 存入 Firestore
-    await setDoc(doc(db, "users", ic.trim()), {
-      ic: ic.trim(),
-      faceImageUrl: imageUrl,
-      privateKey,
-      walletAddress,
-    });
+    console.log("✅ Firestore 合并更新成功");
   };
 
   const handleRegister = async () => {
@@ -155,17 +165,17 @@ const RegisterForm = () => {
           className="w-full h-64 object-cover bg-black"
         />
         {countdown !== null && (
-            <div
-              className="absolute top-4 right-4 text-[80px] font-extrabold pointer-events-none select-none"
-              style={{
-                color: "transparent",
-                WebkitTextStroke: "3px black", // 黑色描边
-                opacity: 1, // 完全不透明边框
-              }}
-            >
-              {countdown}
-            </div>
-          )}
+          <div
+            className="absolute top-4 right-4 text-[80px] font-extrabold pointer-events-none select-none"
+            style={{
+              color: "transparent",
+              WebkitTextStroke: "3px black",
+              opacity: 1,
+            }}
+          >
+            {countdown}
+          </div>
+        )}
       </div>
     </div>
   );

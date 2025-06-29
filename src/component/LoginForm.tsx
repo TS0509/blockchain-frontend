@@ -92,7 +92,8 @@ const LoginForm = () => {
 
         if (docSnap.exists()) {
           const userData = docSnap.data();
-          const walletAddress = userData.walletAddress || "";
+          const walletAddress = userData.address || "";
+
 
           localStorage.setItem("icNumber", ic.trim());
           localStorage.setItem("walletAddress", walletAddress);
