@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import useAuthGuard from "@/hook/useAuthGuard";
 import { authFetch } from "@/utils/authFetch";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 interface ExportedBlock {
   number: number;
@@ -23,7 +24,7 @@ export default function BlockChainList() {
   useEffect(() => {
     const authFetchBlocks = async () => {
       try {
-        const res = await authFetch("http://localhost:8080/api/blocks");
+        const res = await authFetch(`${API_URL}/api/blocks`);
         if (!res.ok) throw new Error("Failed to authFetch");
         const rawData = await res.json();
 

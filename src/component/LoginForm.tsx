@@ -7,6 +7,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { storage, db } from "@/utils/firebaseConfig";
 import { detectFace, compareFaces } from "@/utils/faceAPI";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 export default function LoginForm() {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -105,7 +107,7 @@ export default function LoginForm() {
       const walletAddress = userData.address || "";
 
       // 后端拿 token（包含 role）
-      const loginRes = await fetch("http://localhost:8080/login", {
+      const loginRes = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ic: ic.trim() }),

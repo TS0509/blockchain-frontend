@@ -11,6 +11,8 @@ import { doc, setDoc } from "firebase/firestore";
 import { db, storage } from "@/utils/firebaseConfig";
 import { detectFace } from "@/utils/faceAPI";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 const RegisterForm = () => {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -74,7 +76,7 @@ const RegisterForm = () => {
     }
 
     // 先注册后端
-    const response = await fetch("http://localhost:8080/register", {
+    const response = await fetch(`${API_URL}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ic: ic.trim() }),

@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authFetch } from "@/utils/authFetch";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 export default function useAuthGuard() {
   const router = useRouter();
 
@@ -12,8 +14,8 @@ export default function useAuthGuard() {
       return;
     }
 
-    // 去后端验证 token
-    authFetch("http://localhost:8080/auth/check", {
+    // ✅ 动态读取后端地址
+    authFetch(`${API_URL}/auth/check`, {
       method: "GET",
       headers: { Authorization: token },
     })

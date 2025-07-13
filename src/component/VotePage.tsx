@@ -5,6 +5,8 @@ import CandidateCard from "@/component/CandidateCard";
 import useAuthGuard from "@/hook/useAuthGuard";
 import { authFetch } from "@/utils/authFetch";
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 type Candidate = {
   name: string;
   index: number;
@@ -30,7 +32,7 @@ export default function VotePage() {
   useEffect(() => {
     const fetchFromBackend = async () => {
       try {
-        const res = await authFetch("http://localhost:8080/candidates");
+        const res = await authFetch(`${API_URL}/candidates`);
         const data = await res.json();
 
         const parsed: Candidate[] = (data as CandidateResponse[]).map((c) => ({
@@ -60,7 +62,7 @@ export default function VotePage() {
       const ic = localStorage.getItem("icNumber");
       if (!ic) throw new Error("找不到您的 IC 号码，请先登录");
 
-      const res = await authFetch("http://localhost:8080/vote", {
+      const res = await authFetch(`${API_URL}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ candidate: index, ic }),

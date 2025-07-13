@@ -7,6 +7,8 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage
 import useAdminGuard from "@/utils/useAdminGuard";
 import { useRouter } from "next/navigation";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 export default function AdminPage() {
   useAdminGuard();
   const [candidateName, setCandidateName] = useState("");
@@ -29,7 +31,7 @@ const handleAddCandidate = async () => {
     const snapshot = await uploadBytes(imageRef, avatarFile);
     const avatarUrl = await getDownloadURL(snapshot.ref);
 
-    const res = await authFetch("http://localhost:8080/admin/add-candidate", {
+    const res = await authFetch(`${API_URL}/admin/add-candidate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -63,7 +65,7 @@ const handleAddCandidate = async () => {
 
   const handleStartVoting = async () => {
     try {
-      const res = await authFetch("http://localhost:8080/admin/start-voting", {
+      const res = await authFetch(`${API_URL}/admin/start-voting`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
@@ -82,7 +84,7 @@ const handleAddCandidate = async () => {
 
   const handleStopVoting = async () => {
     try {
-      const res = await authFetch("http://localhost:8080/admin/stop-voting", {
+      const res = await authFetch(`${API_URL}/admin/stop-voting`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),

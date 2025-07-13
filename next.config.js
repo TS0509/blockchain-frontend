@@ -12,6 +12,7 @@ const ContentSecurityPolicy = `
     https://firestore.googleapis.com
     https://firebasestorage.googleapis.com
     https://api-us.faceplusplus.com;
+    https://go-voting-backend.onrender.com;
   object-src 'none';
   frame-ancestors 'none';
   base-uri 'self';
