@@ -35,5 +35,5 @@ export default function useAdminGuard() {
     }
 
     // ✅ 是 admin，允许进入
-  }, []);
+  }, [router]); // ✅ 修复 ESLint warning
 }

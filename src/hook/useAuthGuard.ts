@@ -13,7 +13,7 @@ export default function useAuthGuard() {
     }
 
     // 去后端验证 token
-    fetch("http://localhost:8080/auth/check", {
+    authFetch("http://localhost:8080/auth/check", {
       method: "GET",
       headers: { Authorization: token },
     })

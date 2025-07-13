@@ -6,8 +6,9 @@ export const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 // ✅ 导出 ABI（自动从 VotingABI.json 读取）
 export const CONTRACT_ABI = ABI;
 
-// ✅ （可选）默认导出一个对象，方便整合引用
-export default {
+// ✅ 命名导出 + 默认导出一个对象
+const contractConfig = {
   CONTRACT_ABI,
   CONTRACT_ADDRESS,
 };
+export default contractConfig;

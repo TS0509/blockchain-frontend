@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import CandidateCard from "@/component/CandidateCard";
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/utils/contract";
-import { ethers } from "ethers";
 import useAuthGuard from "@/hook/useAuthGuard";
 import { authFetch } from "@/utils/authFetch";
 
@@ -23,30 +21,35 @@ export default function VotePage() {
   const [walletAddress, setWalletAddress] = useState("");
   useAuthGuard();
 
-  useEffect(() => {
-  const fetchFromBackend = async () => {
-    try {
-      const res = await authFetch("http://localhost:8080/candidates");
-      const data = await res.json();
-
-      const parsed = data.map((c: any) => ({
-        name: c.name,
-        index: c.index,
-        avatar: c.avatar,
-      }));
-
-      setCandidates(parsed);
-    } catch (err) {
-      console.error("获取候选人失败", err);
-    }
+  type CandidateResponse = {
+    name: string;
+    index: number;
+    avatar?: string;
   };
 
-  fetchFromBackend();
+  useEffect(() => {
+    const fetchFromBackend = async () => {
+      try {
+        const res = await authFetch("http://localhost:8080/candidates");
+        const data = await res.json();
 
-  const storedWallet = localStorage.getItem("walletAddress");
-  if (storedWallet) setWalletAddress(storedWallet);
-}, []);
+        const parsed: Candidate[] = (data as CandidateResponse[]).map((c) => ({
+          name: c.name,
+          index: c.index,
+          avatar: c.avatar,
+        }));
 
+        setCandidates(parsed);
+      } catch (err) {
+        console.error("获取候选人失败", err);
+      }
+    };
+
+    fetchFromBackend();
+
+    const storedWallet = localStorage.getItem("walletAddress");
+    if (storedWallet) setWalletAddress(storedWallet);
+  }, []);
 
   const handleVote = async (index: number) => {
     setIsLoading(true);
@@ -79,11 +82,13 @@ export default function VotePage() {
       const data = await res.json();
       setMessage(`✅ 投票成功！交易哈希：${data.txHash}`);
       setStatus("success");
-    } catch (err: any) {
-      setMessage("❌ " + err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setMessage("❌ " + err.message);
+      } else {
+        setMessage("❌ 发生未知错误");
+      }
       setStatus("error");
-    } finally {
-      setIsLoading(false);
     }
   };
 
