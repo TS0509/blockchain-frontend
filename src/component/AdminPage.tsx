@@ -43,9 +43,13 @@ const handleAddCandidate = async () => {
     setMessage("✅ 添加成功！");
     setCandidateName("");
     setAvatarFile(null);
-  } catch (err: any) {
+  } catch (err: unknown) {
+  if (err instanceof Error) {
     setMessage("❌ " + err.message);
+  } else {
+    setMessage("❌ 发生未知错误");
   }
+}
 };
 
   const handleLogout = () => {
@@ -67,9 +71,13 @@ const handleAddCandidate = async () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "启动失败");
       setMessage("✅ 投票已开始");
-    } catch (err: any) {
-      setMessage("❌ " + err.message);
-    }
+    } catch (err: unknown) {
+  if (err instanceof Error) {
+    setMessage("❌ " + err.message);
+  } else {
+    setMessage("❌ 发生未知错误");
+  }
+}
   };
 
   const handleStopVoting = async () => {
@@ -82,9 +90,13 @@ const handleAddCandidate = async () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "停止失败");
       setMessage("✅ 投票已停止");
-    } catch (err: any) {
-      setMessage("❌ " + err.message);
-    }
+    } catch (err: unknown) {
+  if (err instanceof Error) {
+    setMessage("❌ " + err.message);
+  } else {
+    setMessage("❌ 发生未知错误");
+  }
+}
   };
 
   return (
