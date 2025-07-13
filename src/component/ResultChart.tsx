@@ -1,6 +1,6 @@
-// src/component/ResultChart.tsx
 "use client";
 
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 type VoteResult = {
@@ -8,19 +8,81 @@ type VoteResult = {
   votes: number;
 };
 
-const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#8dd1e1", "#a4de6c"];
+type ResultChartProps = {
+  data: VoteResult[];
+  colors: string[];
+};
 
-export default function ResultChart({ data }: { data: VoteResult[] }) {
+export default function ResultChart({ data, colors }: ResultChartProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <div className="w-full h-[350px]">
+    <div className="w-full h-[250px] sm:h-[350px]">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
-          <XAxis dataKey="name" />
-          <YAxis allowDecimals={false} />
-          <Tooltip />
-          <Bar dataKey="votes">
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+        <BarChart 
+          data={data}
+          layout={isMobile ? "vertical" : "horizontal"}
+          margin={{
+            top: 20,
+            right: isMobile ? 0 : 20,
+            left: isMobile ? 40 : 0,
+            bottom: 5
+          }}
+        >
+          {isMobile ? (
+            <>
+              <YAxis 
+                type="category" 
+                dataKey="name" 
+                tick={{ fontSize: 10, fill: '#010066' }}
+                width={80}
+              />
+              <XAxis 
+                type="number" 
+                tick={{ fontSize: 10, fill: '#010066' }}
+              />
+            </>
+          ) : (
+            <>
+              <XAxis 
+                dataKey="name" 
+                tick={{ fontSize: 12, fill: '#010066' }}
+              />
+              <YAxis 
+                allowDecimals={false} 
+                tick={{ fontSize: 12, fill: '#010066' }}
+              />
+            </>
+          )}
+          <Tooltip 
+            contentStyle={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              borderColor: '#D4AF37',
+              borderRadius: '0.5rem',
+              fontSize: '14px',
+              padding: '8px'
+            }}
+          />
+          <Bar 
+            dataKey="votes" 
+            radius={[4, 4, 0, 0]}
+            barSize={isMobile ? 20 : 40}
+          >
+            {data.map((_, index) => (
+              <Cell 
+                key={`cell-${index}`} 
+                fill={colors[index % colors.length]} 
+              />
             ))}
           </Bar>
         </BarChart>

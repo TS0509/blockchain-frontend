@@ -131,51 +131,108 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="p-6 max-w-sm mx-auto space-y-4 bg-white rounded-xl shadow text-center">
-      <h1 className="text-2xl font-bold text-gray-800">📝 人脸注册</h1>
-
-      <input
-        type="text"
-        placeholder="请输入身份证号（IC）"
-        value={ic}
-        onChange={(e) => setIC(e.target.value)}
-        className="w-full border p-2 rounded"
-      />
-
-      <button
-        onClick={handleRegister}
-        disabled={loading}
-        className={`w-full py-2 rounded text-white font-semibold ${
-          loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-        }`}
-      >
-        {loading ? "注册中..." : "注册"}
-      </button>
-
-      {message && (
-        <p className={`text-sm font-medium ${getMessageColor()}`}>{message}</p>
-      )}
-
-      <div className="mt-4 relative border rounded overflow-hidden shadow-md">
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          className="w-full h-64 object-cover bg-black"
-        />
-        {countdown !== null && (
-          <div
-            className="absolute top-4 right-4 text-[80px] font-extrabold pointer-events-none select-none"
-            style={{
-              color: "transparent",
-              WebkitTextStroke: "3px black",
-              opacity: 1,
-            }}
-          >
-            {countdown}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+      <div className="relative z-10 max-w-md w-full bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-[#D4AF37]/30">
+        {/* Malaysian emblem-inspired logo */}
+        <div className="mx-auto mb-6 w-16 h-16 rounded-full bg-[#010066] flex items-center justify-center relative">
+          <div className="w-12 h-12 rounded-full bg-[#FFCC00] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#CC0000]"></div>
           </div>
-        )}
+        </div>
+
+        <h1 className="text-2xl font-bold text-[#010066] mb-2 text-center">
+          <span className="text-[#CC0000]">人脸注册</span>
+        </h1>
+        <p className="text-gray-600 mb-6 text-center">
+          Sistem Pendaftaran Berasaskan Wajah
+        </p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[#010066] mb-1">
+              身份证号码 (IC Number)
+            </label>
+            <input
+              type="text"
+              placeholder="Contoh: 901025-14-5555"
+              value={ic}
+              onChange={(e) => setIC(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#010066] focus:border-transparent"
+            />
+          </div>
+
+          <button
+            onClick={handleRegister}
+            disabled={loading}
+            className={`w-full cursor-pointer px-6 py-3 rounded-xl shadow-lg transition-all duration-300 ${
+              loading
+                ? "bg-gray-400"
+                : "bg-gradient-to-r from-[#010066] to-[#0066CC] hover:from-[#010066] hover:to-[#004499] hover:-translate-y-0.5"
+            } text-white font-medium flex items-center justify-center`}
+          >
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                注册中...
+              </>
+            ) : (
+              "注册 / Daftar"
+            )}
+          </button>
+
+          {message && (
+            <p
+              className={`text-sm font-medium text-center mt-2 ${getMessageColor()}`}
+            >
+              {message}
+            </p>
+          )}
+
+          <div className="mt-4 relative border border-gray-200 rounded-xl overflow-hidden shadow-md">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="w-full h-64 object-cover bg-black"
+            />
+            {countdown !== null && (
+              <div
+                className="absolute top-4 right-4 text-[80px] font-extrabold pointer-events-none select-none"
+                style={{
+                  color: "transparent",
+                  WebkitTextStroke: "3px white",
+                  opacity: 1,
+                }}
+              >
+                {countdown}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <p className="mt-6 text-xs text-gray-500 text-center">
+          Dibawah Kelolaan <span className="text-[#010066] font-medium">SPR Malaysia</span>
+        </p>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { storage, db } from "@/utils/firebaseConfig";
 import { detectFace, compareFaces } from "@/utils/faceAPI";
 
-const LoginForm = () => {
+export default function LoginForm() {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [ic, setIC] = useState("");
@@ -16,7 +16,6 @@ const LoginForm = () => {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"default" | "success" | "error" | "warn">("default");
 
-  // 将 Blob 转为 base64
   const blobToBase64 = (blob: Blob): Promise<string> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -25,7 +24,6 @@ const LoginForm = () => {
       reader.readAsDataURL(blob);
     });
 
-  // 倒计时 + 拍照
   const startCountdownAndCapture = async (): Promise<string> => {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     const video = videoRef.current!;
@@ -53,7 +51,9 @@ const LoginForm = () => {
     stream.getTracks().forEach((t) => t.stop());
     video.srcObject = null;
 
-    const blob = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b!), "image/jpeg"));
+    const blob = await new Promise<Blob>((resolve) =>
+      canvas.toBlob((b) => resolve(b!), "image/jpeg")
+    );
     return await blobToBase64(blob);
   };
 
@@ -76,43 +76,76 @@ const LoginForm = () => {
       if (!hasFace) {
         setStatus("error");
         setMessage("❌ 没有检测到人脸或人脸数量不正确");
-        setLoading(false);
         return;
       }
 
+      // 取注册时的人脸
       const imageRef = storageRef(storage, `faces/${ic.trim()}.jpg`);
       const registeredURL = await getDownloadURL(imageRef);
 
       setMessage("🤝 正在比对...");
       const confidence = await compareFaces(base64, registeredURL);
 
-      if (confidence >= 80) {
-        const docRef = doc(db, "users", ic.trim());
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          const walletAddress = userData.address || "";
-
-
-          localStorage.setItem("icNumber", ic.trim());
-          localStorage.setItem("walletAddress", walletAddress);
-
-          setStatus("success");
-          setMessage(`✅ 登录成功，相似度 ${confidence.toFixed(1)}%，跳转中...`);
-          setTimeout(() => router.push("/home"), 1500);
-        } else {
-          setStatus("error");
-          setMessage("❌ Firestore 中找不到此用户，请先注册");
-        }
-      } else {
+      if (confidence < 80) {
         setStatus("error");
         setMessage(`❌ 人脸不匹配，相似度仅 ${confidence.toFixed(1)}%`);
+        return;
       }
+
+      // 检查 Firestore 中的信息
+      const docRef = doc(db, "users", ic.trim());
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        setStatus("error");
+        setMessage("❌ Firestore 中没有此用户，请先注册");
+        return;
+      }
+
+      const userData = docSnap.data();
+      const walletAddress = userData.address || "";
+
+      // 后端拿 token（包含 role）
+      const loginRes = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ic: ic.trim() }),
+      });
+      const loginData = await loginRes.json();
+
+      if (!loginRes.ok || !loginData.token) {
+        setStatus("error");
+        setMessage("❌ 后端登录失败或 token 无效");
+        return;
+      }
+
+      // 存储
+      localStorage.setItem("icNumber", ic.trim());
+      localStorage.setItem("walletAddress", walletAddress);
+      localStorage.setItem("token", loginData.token);
+
+      // 🔍 解析 JWT 判断 role
+      let role = "user";
+      try {
+        const payload = JSON.parse(atob(loginData.token.split(".")[1]));
+        role = payload.role || "user";
+      } catch (err) {
+        console.error("解析 JWT 出错:", err);
+      }
+
+      setStatus("success");
+      setMessage(`✅ 登录成功，相似度 ${confidence.toFixed(1)}%，跳转中...`);
+
+      setTimeout(() => {
+        if (role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/home");
+        }
+      }, 1500);
     } catch (err) {
       console.error(err);
       setStatus("error");
-      setMessage("❌ 登录失败，请检查摄像头权限或是否已注册");
+      setMessage("❌ 登录失败，请检查摄像头权限或后端服务");
     } finally {
       setLoading(false);
     }
@@ -132,54 +165,105 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-lg p-6 space-y-4 relative">
-        <h1 className="text-2xl font-bold text-center text-gray-800">🔐 人脸识别登录</h1>
-
-        <input
-          type="text"
-          placeholder="请输入身份证号（IC）"
-          value={ic}
-          onChange={(e) => setIC(e.target.value)}
-          className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-          className={`w-full py-2 rounded text-white font-semibold ${
-            loading ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
-          }`}
-        >
-          {loading ? "处理中..." : "开始登录"}
-        </button>
-
-        {message && <p className={`text-center text-sm font-medium ${getMessageColor()}`}>{message}</p>}
-
-        <div className="mt-4 relative border rounded overflow-hidden shadow-md">
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className="w-full h-64 object-cover bg-gray-200"
-          />
-          {countdown !== null && (
-            <div
-              className="absolute top-4 right-4 text-[80px] font-extrabold pointer-events-none select-none"
-              style={{
-                color: "transparent",
-                WebkitTextStroke: "3px black",
-                opacity: 1,
-              }}
-            >
-              {countdown}
-            </div>
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+      <div className="relative z-10 max-w-md w-full bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-[#D4AF37]/30">
+        {/* Logo */}
+        <div className="mx-auto mb-6 w-16 h-16 rounded-full bg-[#010066] flex items-center justify-center relative">
+          <div className="w-12 h-12 rounded-full bg-[#FFCC00] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#CC0000]"></div>
+          </div>
         </div>
+
+        <h1 className="text-2xl font-bold text-[#010066] mb-2 text-center">
+          <span className="text-[#CC0000]">人脸识别登录</span>
+        </h1>
+        <p className="text-gray-600 mb-6 text-center">Sistem Pengesahan Wajah</p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[#010066] mb-1">
+              身份证号码 (IC Number)
+            </label>
+            <input
+              type="text"
+              placeholder="Contoh: 901025-14-5555"
+              value={ic}
+              onChange={(e) => setIC(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#010066] focus:border-transparent"
+            />
+          </div>
+
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className={`w-full cursor-pointer px-6 py-3 rounded-xl shadow-lg transition-all duration-300 ${
+              loading
+                ? "bg-gray-400"
+                : "bg-gradient-to-r from-[#010066] to-[#0066CC] hover:from-[#010066] hover:to-[#004499] hover:-translate-y-0.5"
+            } text-white font-medium flex items-center justify-center`}
+          >
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                处理中...
+              </>
+            ) : (
+              "开始登录 / Log Masuk"
+            )}
+          </button>
+
+          {message && (
+            <p className={`text-center text-sm font-medium mt-2 ${getMessageColor()}`}>
+              {message}
+            </p>
+          )}
+
+          <div className="mt-4 relative border border-gray-200 rounded-xl overflow-hidden shadow-md">
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="w-full h-64 object-cover bg-black"
+            />
+            {countdown !== null && (
+              <div
+                className="absolute top-4 right-4 text-[80px] font-extrabold pointer-events-none select-none"
+                style={{
+                  color: "transparent",
+                  WebkitTextStroke: "3px white",
+                  opacity: 1,
+                }}
+              >
+                {countdown}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <p className="mt-6 text-xs text-gray-500 text-center">
+          Dibawah Kelolaan <span className="text-[#010066] font-medium">SPR Malaysia</span>
+        </p>
       </div>
     </div>
   );
-};
-
-export default LoginForm;
+}
