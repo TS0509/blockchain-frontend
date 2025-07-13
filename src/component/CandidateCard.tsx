@@ -39,7 +39,7 @@ export default function CandidateCard({
 
       {/* 编号 - Index */}
       <p className="text-sm text-[#CC0000] font-medium">
-        {/* 可加 index 展示编号：候选人 #{index + 1} */}
+       候选人 #{index + 1}
       </p>
 
       {/* 简介 - Description */}

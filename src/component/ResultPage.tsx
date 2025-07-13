@@ -6,7 +6,19 @@ import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/utils/contract";
 import { ethers } from "ethers";
 import useAuthGuard from "@/hook/useAuthGuard";
 
-const COLORS = ["#010066", "#CC0000", "#FFCC00", "#0066CC", "#00AA00", "#6600CC"];
+const COLORS = [
+  "#010066",
+  "#CC0000",
+  "#FFCC00",
+  "#0066CC",
+  "#00AA00",
+  "#6600CC",
+];
+
+type Candidate = {
+  name: string;
+  voteCount: bigint;
+};
 
 type VoteResult = {
   name: string;
@@ -21,14 +33,23 @@ export default function ResultPage() {
   useEffect(() => {
     const loadVotes = async () => {
       try {
-        const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+        const provider = new ethers.JsonRpcProvider(
+          process.env.NEXT_PUBLIC_RPC_URL
+        );
+        const contract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          CONTRACT_ABI,
+          provider
+        );
         const rawCandidates = await contract.getCandidates();
 
-        const parsed: VoteResult[] = rawCandidates.map((c: any) => ({
-          name: c.name,
-          votes: Number(c.voteCount ?? 0),
-        }));
+        const parsed: VoteResult[] = (rawCandidates as Candidate[]).map(
+          (c) => ({
+            name: c.name,
+            votes: Number(c.voteCount ?? 0),
+          })
+        );
+
 
         setResults(parsed);
       } catch (err) {
@@ -63,9 +84,7 @@ export default function ResultPage() {
               <span className="text-[#CC0000]">投票结果</span>
             </h1>
           </div>
-          <p className="text-xs sm:text-base text-gray-600">
-            Keputusan Undian
-          </p>
+          <p className="text-xs sm:text-base text-gray-600">Keputusan Undian</p>
         </div>
 
         {/* Results container - Mobile optimized padding */}
@@ -73,24 +92,27 @@ export default function ResultPage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-6 sm:py-8">
               <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-[#010066] border-t-[#FFCC00] rounded-full animate-spin mb-3 sm:mb-4"></div>
-              <p className="text-sm sm:text-base text-[#010066]">加载中 / Memuatkan...</p>
+              <p className="text-sm sm:text-base text-[#010066]">
+                加载中 / Memuatkan...
+              </p>
             </div>
           ) : results.length > 0 ? (
             <>
               <div className="w-full h-[250px] sm:h-[350px]">
                 <ResultChart data={results} colors={COLORS} />
               </div>
-              
+
               {/* Candidate list - Responsive grid */}
               <div className="mt-3 sm:mt-4 grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
                 {results.map((result, index) => (
                   <div key={index} className="flex items-center py-1 sm:py-0">
-                    <div 
-                      className="w-2 h-2 sm:w-3 sm:h-3 rounded-full mr-2" 
+                    <div
+                      className="w-2 h-2 sm:w-3 sm:h-3 rounded-full mr-2"
                       style={{ backgroundColor: COLORS[index % COLORS.length] }}
                     ></div>
                     <span className="text-xs sm:text-sm text-[#010066] truncate">
-                      {result.name}: <span className="font-medium">{result.votes} 票</span>
+                      {result.name}:{" "}
+                      <span className="font-medium">{result.votes} 票</span>
                     </span>
                   </div>
                 ))}
@@ -105,7 +127,8 @@ export default function ResultPage() {
 
         {/* Malaysian government footer note - Mobile optimized */}
         <p className="mt-4 sm:mt-6 text-[10px] sm:text-xs text-center text-gray-500">
-          Dibawah Kelolaan <span className="text-[#010066] font-medium">SPR Malaysia</span>
+          Dibawah Kelolaan{" "}
+          <span className="text-[#010066] font-medium">SPR Malaysia</span>
         </p>
       </div>
     </div>

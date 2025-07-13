@@ -27,7 +27,7 @@ export default function BlockChainList() {
         if (!res.ok) throw new Error("Failed to authFetch");
         const rawData = await res.json();
 
-        const safeData = rawData.map((b: any) => ({
+        const safeData = rawData.map((b: ExportedBlock) => ({
           ...b,
           txs: Array.isArray(b.txs) ? b.txs : [],
         }));
