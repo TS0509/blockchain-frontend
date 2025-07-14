@@ -15,7 +15,7 @@ type Candidate = {
 
 export default function VotePage() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"default" | "success" | "error">(
     "default"
@@ -54,7 +54,7 @@ export default function VotePage() {
   }, []);
 
   const handleVote = async (index: number) => {
-    setIsLoading(true);
+    setLoadingIndex(index);
     setMessage("");
     setStatus("default");
 
@@ -153,7 +153,7 @@ export default function VotePage() {
               index={c.index}
               avatar={c.avatar} // ✅ 加上 avatar
               onVote={() => handleVote(c.index)}
-              isLoading={isLoading}
+              isLoading={loadingIndex === c.index}
             />
           ))}
         </div>
