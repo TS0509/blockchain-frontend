@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import useAuthGuard from "@/hook/useAuthGuard";
 
 export default function HomePage() {
@@ -13,7 +13,7 @@ export default function HomePage() {
     localStorage.removeItem("walletAddress");
     localStorage.removeItem("token");
     // Redirect to home
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -53,30 +53,37 @@ export default function HomePage() {
         {/* Action buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <button
-            onClick={() => router.push('/blocklist')}
+            onClick={() => router.push("/blocklist")}
             className="cursor-pointer px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#010066] to-[#0066CC] hover:from-[#010066] hover:to-[#004499] text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#010066] focus:ring-opacity-50"
           >
             区块链结构 / Struktur Blockchain
           </button>
           <button
-            onClick={() => router.push('/vote')}
+            onClick={() => router.push("/vote")}
             className="cursor-pointer px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#00AA00] to-[#00CC66] hover:from-[#008800] hover:to-[#00AA55] text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#00AA00] focus:ring-opacity-50"
           >
             去投票 / Undi Sekarang
           </button>
           <button
-            onClick={() => router.push('/result')}
+            onClick={() => router.push("/result")}
             className="cursor-pointer px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#6600CC] to-[#AA00FF] hover:from-[#5500AA] hover:to-[#8800DD] text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#6600CC] focus:ring-opacity-50"
           >
             投票结果 / Keputusan Undian
+          </button>
+          <button
+            onClick={() => router.push("/votelog")}
+            className="cursor-pointer px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#010066] to-[#FFCC00] hover:from-[#00004d] hover:to-[#e6b800] text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#010066] focus:ring-opacity-50"
+          >
+            投票记录 / Rekod Undian
           </button>
         </div>
 
         {/* Malaysian government footer note */}
         <p className="mt-6 sm:mt-10 text-xs text-gray-500">
-          Dibawah Kelolaan <span className="text-[#010066] font-medium">SPR Malaysia</span>
+          Dibawah Kelolaan{" "}
+          <span className="text-[#010066] font-medium">SPR Malaysia</span>
         </p>
       </div>
     </div>
-  )
+  );
 }
