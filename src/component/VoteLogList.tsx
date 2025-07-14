@@ -22,7 +22,7 @@ export default function VoteLogList() {
   useEffect(() => {
     const fetchVoteLogs = async () => {
       try {
-        const res = await authFetch(`${API_URL}/api/votelogs`);
+        const res = await authFetch(`${API_URL}/api/votelog`);
         if (!res.ok) throw new Error("无法获取投票日志");
         const data = await res.json();
         setLogs(data);
