@@ -6,7 +6,14 @@ const ContentSecurityPolicy = `
   font-src 'self' https://fonts.gstatic.com;
   img-src 'self' data: blob:;
   media-src 'self';
-  connect-src 'self' http://localhost:8080 http://localhost:8545 https://firestore.googleapis.com https://firebasestorage.googleapis.com https://api-us.faceplusplus.com https://go-voting-backend.onrender.com;
+  connect-src 'self'
+    http://localhost:8080
+    http://localhost:8545
+    https://firestore.googleapis.com
+    https://firebasestorage.googleapis.com
+    https://api-us.faceplusplus.com
+    https://go-voting-backend.onrender.com
+    https://eth-sepolia.g.alchemy.com;
   object-src 'none';
   frame-ancestors 'none';
   base-uri 'self';
