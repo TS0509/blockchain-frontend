@@ -5,7 +5,7 @@ import CandidateCard from "@/component/CandidateCard";
 import useAuthGuard from "@/hook/useAuthGuard";
 import { authFetch } from "@/utils/authFetch";
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 type Candidate = {
   name: string;
@@ -15,19 +15,16 @@ type Candidate = {
 
 export default function VotePage() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
+  const [voteStatusMap, setVoteStatusMap] = useState<
+    Record<number, "default" | "loading" | "success">
+  >({});
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"default" | "success" | "error">(
     "default"
   );
   const [walletAddress, setWalletAddress] = useState("");
+  const [hasVoted, setHasVoted] = useState(false);
   useAuthGuard();
-
-  type CandidateResponse = {
-    name: string;
-    index: number;
-    avatar?: string;
-  };
 
   useEffect(() => {
     const fetchFromBackend = async () => {
@@ -35,7 +32,7 @@ export default function VotePage() {
         const res = await authFetch(`${API_URL}/candidates`);
         const data = await res.json();
 
-        const parsed: Candidate[] = (data as CandidateResponse[]).map((c) => ({
+        const parsed: Candidate[] = data.map((c: any) => ({
           name: c.name,
           index: c.index,
           avatar: c.avatar,
@@ -54,7 +51,7 @@ export default function VotePage() {
   }, []);
 
   const handleVote = async (index: number) => {
-    setLoadingIndex(index);
+    setVoteStatusMap((prev) => ({ ...prev, [index]: "loading" }));
     setMessage("");
     setStatus("default");
 
@@ -70,27 +67,20 @@ export default function VotePage() {
 
       if (!res.ok) {
         const errorText = await res.text();
-        if (errorText.includes("Already voted")) {
-          throw new Error("您已投过票，不能重复投票");
-        } else if (errorText.includes("Voting not started")) {
-          throw new Error("投票尚未开始，请稍后再试");
-        } else if (errorText.includes("User not found")) {
-          throw new Error("未找到您的身份，请重新登录");
-        } else {
-          throw new Error("投票失败：" + errorText);
-        }
+        throw new Error(errorText);
       }
 
       const data = await res.json();
       setMessage(`✅ 投票成功！交易哈希：${data.txHash}`);
       setStatus("success");
+
+      setVoteStatusMap((prev) => ({ ...prev, [index]: "success" }));
+      setHasVoted(true);
     } catch (err) {
-      if (err instanceof Error) {
-        setMessage("❌ " + err.message);
-      } else {
-        setMessage("❌ 发生未知错误");
-      }
+      const errMsg = err instanceof Error ? err.message : "发生未知错误";
+      setMessage("❌ " + errMsg);
       setStatus("error");
+      setVoteStatusMap((prev) => ({ ...prev, [index]: "default" }));
     }
   };
 
@@ -107,7 +97,6 @@ export default function VotePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-8 relative">
-      {/* Malaysian flag pattern overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-1/3 bg-[#CC0000]"></div>
         <div className="absolute top-1/3 left-0 w-full h-1/3 bg-white"></div>
@@ -115,7 +104,6 @@ export default function VotePage() {
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto">
-        {/* Header with Malaysian emblem */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8">
           <div className="flex items-center mb-4 sm:mb-0">
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#010066] flex items-center justify-center mr-4">
@@ -132,7 +120,6 @@ export default function VotePage() {
           </p>
         </div>
 
-        {/* Current wallet address */}
         {walletAddress && (
           <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-md border border-[#D4AF37]/30 mb-6">
             <p className="text-xs sm:text-sm text-[#010066] font-medium">
@@ -144,21 +131,20 @@ export default function VotePage() {
           </div>
         )}
 
-        {/* Candidates list */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {candidates.map((c) => (
             <CandidateCard
               key={c.index}
               name={c.name}
               index={c.index}
-              avatar={c.avatar} // ✅ 加上 avatar
+              avatar={c.avatar}
               onVote={() => handleVote(c.index)}
-              isLoading={loadingIndex === c.index}
+              isLoading={voteStatusMap[c.index] === "loading"}
+              hasVoted={hasVoted}
             />
           ))}
         </div>
 
-        {/* Status message */}
         {message && (
           <div
             className={`mt-6 p-4 rounded-xl text-center ${
@@ -177,7 +163,6 @@ export default function VotePage() {
           </div>
         )}
 
-        {/* Malaysian government footer note */}
         <p className="mt-8 text-xs sm:text-sm text-center text-gray-500">
           Dibawah Kelolaan{" "}
           <span className="text-[#010066] font-medium">SPR Malaysia</span>

@@ -1,3 +1,4 @@
+// component/CandidateCard.tsx
 "use client";
 
 import Image from "next/image";
@@ -5,10 +6,11 @@ import Image from "next/image";
 type Props = {
   name: string;
   description?: string;
-  avatar?: string; // ✅ 原本是 imgUrl，改成 avatar
+  avatar?: string;
   index: number;
   onVote: () => void;
   isLoading?: boolean;
+  hasVoted?: boolean; // ✅ 新增：投票状态
 };
 
 export default function CandidateCard({
@@ -18,13 +20,13 @@ export default function CandidateCard({
   index,
   onVote,
   isLoading = false,
+  hasVoted = false,
 }: Props) {
   return (
     <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-[#D4AF37]/30 hover:shadow-xl transition-all duration-300 space-y-3">
-      {/* 头像 - Candidate Image */}
       <div className="w-full h-40 sm:h-48 relative rounded-lg overflow-hidden border border-[#010066]/20">
         <Image
-          src={avatar || "/default-avatar.png"} // ✅ 用 avatar 代替
+          src={avatar || "/default-avatar.png"}
           alt={`${name} 头像`}
           fill
           className="object-cover"
@@ -32,27 +34,16 @@ export default function CandidateCard({
         />
       </div>
 
-      {/* 姓名 - Name */}
-      <h3 className="text-lg sm:text-xl font-semibold text-[#010066]">
-        {name}
-      </h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-[#010066]">{name}</h3>
+      <p className="text-sm text-[#CC0000] font-medium">候选人 #{index + 1}</p>
 
-      {/* 编号 - Index */}
-      <p className="text-sm text-[#CC0000] font-medium">
-       候选人 #{index + 1}
-      </p>
+      {description && <p className="text-sm text-gray-700">{description}</p>}
 
-      {/* 简介 - Description */}
-      {description && (
-        <p className="text-sm text-gray-700">{description}</p>
-      )}
-
-      {/* 投票按钮 - Vote Button */}
       <button
         onClick={onVote}
-        disabled={isLoading}
-        className={`w-full py-2 sm:py-3 rounded-xl shadow-md transition-all duration-300 cursor-pointer ${
-          isLoading
+        disabled={isLoading || hasVoted}
+        className={`w-full py-2 sm:py-3 rounded-xl shadow-md transition-all duration-300 ${
+          isLoading || hasVoted
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-gradient-to-r from-[#010066] to-[#0066CC] hover:from-[#010066] hover:to-[#004499] hover:-translate-y-0.5"
         } text-white font-medium`}
@@ -81,6 +72,8 @@ export default function CandidateCard({
             </svg>
             处理中 / Memproses...
           </span>
+        ) : hasVoted ? (
+          "✅ 您已投票"
         ) : (
           `投票给 ${name} / Undi ${name}`
         )}
