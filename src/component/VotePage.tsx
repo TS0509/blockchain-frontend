@@ -26,13 +26,20 @@ export default function VotePage() {
   const [hasVoted, setHasVoted] = useState(false);
   useAuthGuard();
 
+  type CandidateResponse = {
+  name: string;
+  index: number;
+  avatar?: string;
+};
+
+
   useEffect(() => {
     const fetchFromBackend = async () => {
       try {
         const res = await authFetch(`${API_URL}/candidates`);
         const data = await res.json();
 
-        const parsed: Candidate[] = data.map((c: any) => ({
+        const parsed: Candidate[] = (data as CandidateResponse[]).map((c) => ({
           name: c.name,
           index: c.index,
           avatar: c.avatar,
