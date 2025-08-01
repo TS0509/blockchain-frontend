@@ -1,5 +1,5 @@
 "use client";
-import {useRouter} from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ResultChart from "@/component/ResultChart";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/utils/contract";
