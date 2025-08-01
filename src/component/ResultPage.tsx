@@ -1,5 +1,5 @@
 "use client";
-
+import {useRouter} from "next/router";
 import { useEffect, useState } from "react";
 import ResultChart from "@/component/ResultChart";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/utils/contract";
@@ -29,6 +29,7 @@ export default function ResultPage() {
   const [results, setResults] = useState<VoteResult[]>([]);
   const [loading, setLoading] = useState(true);
   useAuthGuard();
+  const router = useRouter();
 
   useEffect(() => {
     const loadVotes = async () => {
@@ -79,6 +80,12 @@ export default function ResultPage() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#FFCC00] flex items-center justify-center">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#CC0000]"></div>
               </div>
+              <button
+        onClick={() => router.push("/home")}
+        className="fixed top-4 left-4 z-20 cursor-pointer bg-white/80 text-blue-700 px-4 py-2 rounded-xl shadow hover:bg-white/100 active:scale-95 transition-transform"
+      >
+        ← Home
+      </button>
             </div>
             <h1 className="text-lg sm:text-2xl font-bold text-[#010066]">
               <span className="text-[#CC0000]">Voting results</span>

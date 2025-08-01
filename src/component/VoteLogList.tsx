@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { authFetch } from "@/utils/authFetch";
 import useAuthGuard from "@/hook/useAuthGuard";
@@ -27,7 +27,7 @@ export default function VoteLogList() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const router = useRouter();
   useAuthGuard();
 
   const fetchVoteLogs = async (page: number) => {
@@ -59,7 +59,15 @@ export default function VoteLogList() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 space-y-6">
-      <h2 className="text-2xl font-bold text-center text-[#010066]">voting record</h2>
+      <button
+        onClick={() => router.push("/home")}
+        className="fixed top-4 left-4 z-20 cursor-pointer bg-white/80 text-blue-700 px-4 py-2 rounded-xl shadow hover:bg-white/100 active:scale-95 transition-transform"
+      >
+        ← Home
+      </button>
+      <h2 className="text-2xl font-bold text-center text-[#010066]">
+        voting record
+      </h2>
 
       {logs.length === 0 ? (
         <p className="text-center text-gray-500">No record yet</p>
@@ -69,10 +77,18 @@ export default function VoteLogList() {
             key={idx}
             className="p-4 bg-white rounded-lg shadow border border-gray-200"
           >
-            <p><strong>Voter:</strong> {log.voter}</p>
-            <p><strong>Candidate number:</strong> {log.candidateIndex}</p>
-            <p><strong>block number:</strong> {log.blockNumber}</p>
-            <p className="break-all"><strong>transaction hash:</strong> {log.txHash}</p>
+            <p>
+              <strong>Voter:</strong> {log.voter}
+            </p>
+            <p>
+              <strong>Candidate number:</strong> {log.candidateIndex}
+            </p>
+            <p>
+              <strong>block number:</strong> {log.blockNumber}
+            </p>
+            <p className="break-all">
+              <strong>transaction hash:</strong> {log.txHash}
+            </p>
           </div>
         ))
       )}
@@ -87,7 +103,8 @@ export default function VoteLogList() {
           Previous page
         </button>
         <span className="text-gray-700">
-          the <strong>{page}</strong> page / total <strong>{totalPages}</strong> page
+          the <strong>{page}</strong> page / total <strong>{totalPages}</strong>{" "}
+          page
         </span>
         <button
           className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"

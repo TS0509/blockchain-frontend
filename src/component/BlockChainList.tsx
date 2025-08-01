@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import useAuthGuard from "@/hook/useAuthGuard";
 import { authFetch } from "@/utils/authFetch";
@@ -20,6 +20,7 @@ export default function BlockChainList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   useAuthGuard();
+  const router = useRouter();
 
   useEffect(() => {
     const authFetchBlocks = async () => {
@@ -45,31 +46,33 @@ export default function BlockChainList() {
     authFetchBlocks();
   }, []);
 
-  if (loading) return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-      <div className="text-center">
-        <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#010066] flex items-center justify-center relative">
-          <div className="w-12 h-12 rounded-full bg-[#FFCC00] flex items-center justify-center">
-            <div className="w-10 h-10 rounded-full bg-[#CC0000]"></div>
+  if (loading)
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#010066] flex items-center justify-center relative">
+            <div className="w-12 h-12 rounded-full bg-[#FFCC00] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-[#CC0000]"></div>
+            </div>
           </div>
+          <p className="text-[#010066]">loading...</p>
         </div>
-        <p className="text-[#010066]">loading...</p>
       </div>
-    </div>
-  );
+    );
 
-  if (error) return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-      <div className="text-center">
-        <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#010066] flex items-center justify-center relative">
-          <div className="w-12 h-12 rounded-full bg-[#FFCC00] flex items-center justify-center">
-            <div className="w-10 h-10 rounded-full bg-[#CC0000]"></div>
+  if (error)
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#010066] flex items-center justify-center relative">
+            <div className="w-12 h-12 rounded-full bg-[#FFCC00] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-[#CC0000]"></div>
+            </div>
           </div>
+          <p className="text-red-500">{error}</p>
         </div>
-        <p className="text-red-500">{error}</p>
       </div>
-    </div>
-  );
+    );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-8">
@@ -88,6 +91,12 @@ export default function BlockChainList() {
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#FFCC00] flex items-center justify-center">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#CC0000]"></div>
               </div>
+              <button
+                onClick={() => router.push("/home")}
+                className="fixed top-4 left-4 z-20 cursor-pointer bg-white/80 text-blue-700 px-4 py-2 rounded-xl shadow hover:bg-white/100 active:scale-95 transition-transform"
+              >
+                ← Home
+              </button>
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-[#010066]">
               <span className="text-[#CC0000]">Blockchain structure</span>
@@ -107,40 +116,62 @@ export default function BlockChainList() {
             >
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
                 <div>
-                  <p className="text-xs sm:text-sm text-[#010066] font-medium">block height</p>
-                  <p className="text-sm sm:text-base">#{block.number ?? "未知"}</p>
-                </div>
-                <div>
-                  <p className="text-xs sm:text-sm text-[#010066] font-medium">Timestamp</p>
+                  <p className="text-xs sm:text-sm text-[#010066] font-medium">
+                    block height
+                  </p>
                   <p className="text-sm sm:text-base">
-                    {isNaN(Number(block.timestamp))
-                      ? "invalid time"
-                      : new Date(Number(block.timestamp) * 1000).toLocaleString()}
+                    #{block.number ?? "未知"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-[#010066] font-medium">Transaction quantity</p>
-                  <p className="text-sm sm:text-base">{block.txCount ?? "未知"}</p>
+                  <p className="text-xs sm:text-sm text-[#010066] font-medium">
+                    Timestamp
+                  </p>
+                  <p className="text-sm sm:text-base">
+                    {isNaN(Number(block.timestamp))
+                      ? "invalid time"
+                      : new Date(
+                          Number(block.timestamp) * 1000
+                        ).toLocaleString()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs sm:text-sm text-[#010066] font-medium">
+                    Transaction quantity
+                  </p>
+                  <p className="text-sm sm:text-base">
+                    {block.txCount ?? "未知"}
+                  </p>
                 </div>
               </div>
 
               <div className="mt-3 sm:mt-4">
-                <p className="text-xs sm:text-sm text-[#010066] font-medium">block hash</p>
-                <p className="text-xs sm:text-sm text-gray-700 break-all">{block.hash || "无"}</p>
+                <p className="text-xs sm:text-sm text-[#010066] font-medium">
+                  block hash
+                </p>
+                <p className="text-xs sm:text-sm text-gray-700 break-all">
+                  {block.hash || "无"}
+                </p>
               </div>
 
               <div className="mt-2">
-                <p className="text-xs sm:text-sm text-[#010066] font-medium">Parent block hash</p>
-                <p className="text-xs sm:text-sm text-gray-700 break-all">{block.parentHash || "无"}</p>
+                <p className="text-xs sm:text-sm text-[#010066] font-medium">
+                  Parent block hash
+                </p>
+                <p className="text-xs sm:text-sm text-gray-700 break-all">
+                  {block.parentHash || "无"}
+                </p>
               </div>
 
               {block.txs && block.txs.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-xs sm:text-sm text-[#010066] font-medium">transaction list</p>
+                  <p className="text-xs sm:text-sm text-[#010066] font-medium">
+                    transaction list
+                  </p>
                   <ul className="mt-1 space-y-1">
                     {block.txs.map((tx) => (
-                      <li 
-                        key={tx} 
+                      <li
+                        key={tx}
                         className="text-xs sm:text-sm text-blue-700 break-all px-2 py-1 bg-blue-50 rounded"
                       >
                         {tx}
@@ -155,7 +186,8 @@ export default function BlockChainList() {
 
         {/* Malaysian government footer note */}
         <p className="mt-8 text-xs sm:text-sm text-center text-gray-500">
-          Dibawah Kelolaan <span className="text-[#010066] font-medium">SPR Malaysia</span>
+          Dibawah Kelolaan{" "}
+          <span className="text-[#010066] font-medium">SPR Malaysia</span>
         </p>
       </div>
     </div>

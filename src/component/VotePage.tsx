@@ -113,7 +113,7 @@ export default function VotePage() {
       </div>
       <button
         onClick={() => router.push("/home")}
-        className="fixed top-4 left-4 z-20 bg-white/80 text-blue-700 px-4 py-2 rounded-xl shadow hover:bg-white/100 transition"
+        className="fixed top-4 left-4 z-20 cursor-pointer bg-white/80 text-blue-700 px-4 py-2 rounded-xl shadow hover:bg-white/100 active:scale-95 transition-transform"
       >
         ← Home
       </button>
