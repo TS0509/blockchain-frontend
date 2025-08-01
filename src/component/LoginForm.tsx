@@ -190,7 +190,11 @@ export default function LoginForm() {
               type="text"
               placeholder="Contoh: 901025-14-5555"
               value={ic}
-              onChange={(e) => setIC(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                const cleaned = value.replace(/[^0-9-]/g, "");
+                setIC(cleaned);
+              }}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#010066] focus:border-transparent"
             />
           </div>

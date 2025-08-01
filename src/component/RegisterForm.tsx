@@ -72,7 +72,9 @@ const RegisterForm = () => {
 
     const isFace = await detectFace(base64);
     if (!isFace) {
-      throw new Error("⚠️ No valid face was detected. Please try again facing the camera.");
+      throw new Error(
+        "⚠️ No valid face was detected. Please try again facing the camera."
+      );
     }
 
     // 先注册后端
@@ -87,7 +89,10 @@ const RegisterForm = () => {
       throw new Error("❌ Failed to register backend：" + text);
     }
     const result = await response.json();
-    console.log("Backend registration is successful, wallet address:", result.address);
+    console.log(
+      "Backend registration is successful, wallet address:",
+      result.address
+    );
 
     // 上传人脸图像
     const imageRef = storageRef(storage, `faces/${ic.trim()}.jpg`);
@@ -158,7 +163,11 @@ const RegisterForm = () => {
               type="text"
               placeholder="Contoh: 901025-14-5555"
               value={ic}
-              onChange={(e) => setIC(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                const cleaned = value.replace(/[^0-9-]/g, "");
+                setIC(cleaned);
+              }}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#010066] focus:border-transparent"
             />
           </div>
@@ -233,7 +242,8 @@ const RegisterForm = () => {
         </div>
 
         <p className="mt-6 text-xs text-gray-500 text-center">
-          Dibawah Kelolaan <span className="text-[#010066] font-medium">SPR Malaysia</span>
+          Dibawah Kelolaan{" "}
+          <span className="text-[#010066] font-medium">SPR Malaysia</span>
         </p>
       </div>
     </div>
