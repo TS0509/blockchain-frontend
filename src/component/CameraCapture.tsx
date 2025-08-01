@@ -19,7 +19,7 @@ const CameraCapture: React.FC<Props> = ({ onCapture }) => {
           videoRef.current.srcObject = stream;
         }
       } catch {
-        alert("无法访问摄像头，请检查权限");
+        alert("Unable to access camera, please check permissions");
       }
     };
     startCamera();
@@ -50,13 +50,13 @@ const CameraCapture: React.FC<Props> = ({ onCapture }) => {
         onClick={handleCapture}
         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
       >
-        拍照
+        Photograph
       </button>
 
       {previewBlob && (
         <Image
           src={URL.createObjectURL(previewBlob)}
-          alt="预览图像"
+          alt="preview image"
           width={300}
           height={300}
           className="rounded shadow"

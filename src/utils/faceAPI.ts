@@ -24,7 +24,7 @@ export async function detectFace(base64Image: string): Promise<boolean> {
   if (data.faces && data.faces.length === 1) {
     return true;
   } else {
-    console.warn('人脸检测结果:', data);
+    console.warn('Face detection results:', data);
     return false;
   }
 }

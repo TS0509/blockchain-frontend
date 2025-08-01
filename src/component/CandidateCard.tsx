@@ -27,7 +27,7 @@ export default function CandidateCard({
       <div className="w-full h-40 sm:h-48 relative rounded-lg overflow-hidden border border-[#010066]/20">
         <Image
           src={avatar || "/default-avatar.png"}
-          alt={`${name} 头像`}
+          alt={`${name} avatar`}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -35,7 +35,7 @@ export default function CandidateCard({
       </div>
 
       <h3 className="text-lg sm:text-xl font-semibold text-[#010066]">{name}</h3>
-      <p className="text-sm text-[#CC0000] font-medium">候选人 #{index + 1}</p>
+      <p className="text-sm text-[#CC0000] font-medium">candidate #{index + 1}</p>
 
       {description && <p className="text-sm text-gray-700">{description}</p>}
 
@@ -70,12 +70,12 @@ export default function CandidateCard({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            处理中 / Memproses...
+            Processing / Memproses...
           </span>
         ) : hasVoted ? (
-          "✅ 您已投票"
+          "✅ you have voted"
         ) : (
-          `投票给 ${name} / Undi ${name}`
+          `vote for ${name} / Undi ${name}`
         )}
       </button>
     </div>

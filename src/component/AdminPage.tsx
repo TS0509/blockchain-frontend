@@ -21,7 +21,7 @@ export default function AdminPage() {
 const handleAddCandidate = async () => {
   setMessage(""); // 清空消息
   if (!candidateName.trim() || !avatarFile) {
-    setMessage("❌ 必须填写候选人名称并上传头像");
+    setMessage("❌ You must fill in the candidate's name and upload a profile photo");
     return;
   }
 
@@ -41,15 +41,15 @@ const handleAddCandidate = async () => {
     });
 
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "添加失败");
-    setMessage("✅ 添加成功！");
+    if (!res.ok) throw new Error(data.error || "Add failed");
+    setMessage("✅ Add sucess！");
     setCandidateName("");
     setAvatarFile(null);
   } catch (err: unknown) {
   if (err instanceof Error) {
     setMessage("❌ " + err.message);
   } else {
-    setMessage("❌ 发生未知错误");
+    setMessage("❌ An unknown error occurred");
   }
 }
 };
@@ -71,13 +71,13 @@ const handleAddCandidate = async () => {
         body: JSON.stringify({}),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "启动失败");
-      setMessage("✅ 投票已开始");
+      if (!res.ok) throw new Error(data.error || "Startup failed");
+      setMessage("✅ Voting has started");
     } catch (err: unknown) {
   if (err instanceof Error) {
     setMessage("❌ " + err.message);
   } else {
-    setMessage("❌ 发生未知错误");
+    setMessage("❌ An unknown error occurred");
   }
 }
   };
@@ -90,13 +90,13 @@ const handleAddCandidate = async () => {
         body: JSON.stringify({}),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "停止失败");
-      setMessage("✅ 投票已停止");
+      if (!res.ok) throw new Error(data.error || "Stop failed");
+      setMessage("✅ Voting has stopped");
     } catch (err: unknown) {
   if (err instanceof Error) {
     setMessage("❌ " + err.message);
   } else {
-    setMessage("❌ 发生未知错误");
+    setMessage("❌ An unknown error occurred");
   }
 }
   };
@@ -130,7 +130,7 @@ const handleAddCandidate = async () => {
         </div>
 
         <h1 className="text-2xl font-bold text-[#010066] mb-2 text-center">
-          <span className="text-[#CC0000]">🔐 管理员控制台</span>
+          <span className="text-[#CC0000]">🔐 Administrator console</span>
         </h1>
 
         {/* Avatar upload */}
@@ -152,14 +152,14 @@ const handleAddCandidate = async () => {
           <input
             value={candidateName}
             onChange={(e) => setCandidateName(e.target.value)}
-            placeholder="候选人名称"
+            placeholder="Candidate name"
             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#010066] focus:border-transparent"
           />
           <button 
             onClick={handleAddCandidate} 
             className="px-4 py-2 bg-gradient-to-r from-[#010066] to-[#0066CC] hover:from-[#010066] hover:to-[#004499] text-white font-medium rounded-lg shadow-md transition-all duration-300 transform hover:-translate-y-0.5"
           >
-            添加候选人
+            Add candidate
           </button>
         </div>
 
@@ -169,13 +169,13 @@ const handleAddCandidate = async () => {
             onClick={handleStartVoting}
             className="w-full px-4 py-3 bg-gradient-to-r from-[#00AA00] to-[#00CC66] hover:from-[#008800] hover:to-[#00AA55] text-white font-medium rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#00AA00] focus:ring-opacity-50"
           >
-            开始投票
+            Start voting
           </button>
           <button 
             onClick={handleStopVoting}
             className="w-full px-4 py-3 bg-gradient-to-r from-[#CC0000] to-[#FF6600] hover:from-[#AA0000] hover:to-[#DD5500] text-white font-medium rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#CC0000] focus:ring-opacity-50"
           >
-            停止投票
+            stop voting
           </button>
         </div>
 

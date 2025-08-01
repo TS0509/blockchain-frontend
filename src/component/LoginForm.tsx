@@ -62,7 +62,7 @@ export default function LoginForm() {
   const handleLogin = async () => {
     if (!ic.trim()) {
       setStatus("warn");
-      setMessage("⚠️ 请输入身份证号码");
+      setMessage("⚠️ Please enter your IC number");
       return;
     }
 
@@ -77,7 +77,7 @@ export default function LoginForm() {
       const hasFace = await detectFace(base64);
       if (!hasFace) {
         setStatus("error");
-        setMessage("❌ 没有检测到人脸或人脸数量不正确");
+        setMessage("❌ No faces were detected or the number of faces was incorrect");
         return;
       }
 
@@ -85,12 +85,12 @@ export default function LoginForm() {
       const imageRef = storageRef(storage, `faces/${ic.trim()}.jpg`);
       const registeredURL = await getDownloadURL(imageRef);
 
-      setMessage("🤝 正在比对...");
+      setMessage("🤝 Comparing...");
       const confidence = await compareFaces(base64, registeredURL);
 
       if (confidence < 80) {
         setStatus("error");
-        setMessage(`❌ 人脸不匹配，相似度仅 ${confidence.toFixed(1)}%`);
+        setMessage(`❌ The faces do not match, the similarity is only ${confidence.toFixed(1)}%`);
         return;
       }
 
@@ -99,7 +99,7 @@ export default function LoginForm() {
       const docSnap = await getDoc(docRef);
       if (!docSnap.exists()) {
         setStatus("error");
-        setMessage("❌ Firestore 中没有此用户，请先注册");
+        setMessage("❌ There is no such user in Firestore, please register first");
         return;
       }
 
@@ -116,7 +116,7 @@ export default function LoginForm() {
 
       if (!loginRes.ok || !loginData.token) {
         setStatus("error");
-        setMessage("❌ 后端登录失败或 token 无效");
+        setMessage("❌ Backend login failed or token is invalid");
         return;
       }
 
@@ -131,11 +131,11 @@ export default function LoginForm() {
         const payload = JSON.parse(atob(loginData.token.split(".")[1]));
         role = payload.role || "user";
       } catch (err) {
-        console.error("解析 JWT 出错:", err);
+        console.error("Error parsing JWT:", err);
       }
 
       setStatus("success");
-      setMessage(`✅ 登录成功，相似度 ${confidence.toFixed(1)}%，跳转中...`);
+      setMessage(`✅ Login successful, similarity ${confidence.toFixed(1)}%，Redirecting...`);
 
       setTimeout(() => {
         if (role === "admin") {
@@ -147,7 +147,7 @@ export default function LoginForm() {
     } catch (err) {
       console.error(err);
       setStatus("error");
-      setMessage("❌ 登录失败，请检查摄像头权限或后端服务");
+      setMessage("❌ Login failed, please check camera permissions or backend services");
     } finally {
       setLoading(false);
     }
@@ -177,14 +177,14 @@ export default function LoginForm() {
         </div>
 
         <h1 className="text-2xl font-bold text-[#010066] mb-2 text-center">
-          <span className="text-[#CC0000]">人脸识别登录</span>
+          <span className="text-[#CC0000]">Face recognition login</span>
         </h1>
         <p className="text-gray-600 mb-6 text-center">Sistem Pengesahan Wajah</p>
 
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-[#010066] mb-1">
-              身份证号码 (IC Number)
+              ID number (IC Number)
             </label>
             <input
               type="text"
@@ -226,10 +226,10 @@ export default function LoginForm() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                处理中...
+                Processing...
               </>
             ) : (
-              "开始登录 / Log Masuk"
+              "Start logging in / Log Masuk"
             )}
           </button>
 

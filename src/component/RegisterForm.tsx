@@ -72,7 +72,7 @@ const RegisterForm = () => {
 
     const isFace = await detectFace(base64);
     if (!isFace) {
-      throw new Error("⚠️ 未检测到有效人脸，请正对摄像头重试");
+      throw new Error("⚠️ No valid face was detected. Please try again facing the camera.");
     }
 
     // 先注册后端
@@ -84,10 +84,10 @@ const RegisterForm = () => {
 
     if (!response.ok) {
       const text = await response.text();
-      throw new Error("❌ 注册后端失败：" + text);
+      throw new Error("❌ Failed to register backend：" + text);
     }
     const result = await response.json();
-    console.log("后端注册成功，钱包地址:", result.address);
+    console.log("Backend registration is successful, wallet address:", result.address);
 
     // 上传人脸图像
     const imageRef = storageRef(storage, `faces/${ic.trim()}.jpg`);
@@ -103,30 +103,30 @@ const RegisterForm = () => {
       { merge: true }
     );
 
-    console.log("✅ Firestore 合并更新成功");
+    console.log("✅ Firestore Merge update successful");
   };
 
   const handleRegister = async () => {
     if (!ic.trim()) {
-      setMessage("⚠️ 请输入身份证号码");
+      setMessage("⚠️ Please enter your ID number");
       setStatus("warn");
       return;
     }
 
     setLoading(true);
-    setMessage("📷 正在采集人脸...");
+    setMessage("📷 Collecting faces...");
     setStatus("default");
 
     try {
       await captureAndRegister();
       setStatus("success");
-      setMessage("✅ 注册成功，正在跳转...");
+      setMessage("✅ Registration successful, redirecting...");
       setTimeout(() => router.push("/"), 1500);
     } catch (err: unknown) {
       const error = err as Error;
       console.error(error);
       setStatus("error");
-      setMessage(error.message || "❌ 注册失败");
+      setMessage(error.message || "❌ Registration failed");
     } finally {
       setLoading(false);
     }
@@ -143,7 +143,7 @@ const RegisterForm = () => {
         </div>
 
         <h1 className="text-2xl font-bold text-[#010066] mb-2 text-center">
-          <span className="text-[#CC0000]">人脸注册</span>
+          <span className="text-[#CC0000]">Face registration</span>
         </h1>
         <p className="text-gray-600 mb-6 text-center">
           Sistem Pendaftaran Berasaskan Wajah
@@ -152,7 +152,7 @@ const RegisterForm = () => {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-[#010066] mb-1">
-              身份证号码 (IC Number)
+              ID number (IC Number)
             </label>
             <input
               type="text"
@@ -194,7 +194,7 @@ const RegisterForm = () => {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                注册中...
+                Registering...
               </>
             ) : (
               "注册 / Daftar"

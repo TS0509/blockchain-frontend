@@ -18,7 +18,7 @@ export async function authFetch(input: RequestInfo, init: RequestInit = {}) {
     localStorage.removeItem("icNumber");
     localStorage.removeItem("walletAddress");
     window.location.href = "/";
-    return Promise.reject("未授权，请重新登录");
+    return Promise.reject("Unauthorized, please log in again");
   }
 
   return response;

@@ -44,7 +44,7 @@ export default function HomePage() {
         </div>
 
         <h1 className="text-2xl sm:text-4xl font-bold text-[#010066] mb-2">
-          <span className="text-[#CC0000]">欢迎回来！</span>
+          <span className="text-[#CC0000]">Welcome back!</span>
         </h1>
         <p className="text-sm sm:text-lg text-gray-600 mb-6 sm:mb-10">
           Anda telah berjaya log masuk ke sistem.
@@ -56,25 +56,25 @@ export default function HomePage() {
             onClick={() => router.push("/blocklist")}
             className="cursor-pointer px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#010066] to-[#0066CC] hover:from-[#010066] hover:to-[#004499] text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#010066] focus:ring-opacity-50"
           >
-            区块链结构 / Struktur Blockchain
+            Blockchain Structure / Struktur Blockchain
           </button>
           <button
             onClick={() => router.push("/vote")}
             className="cursor-pointer px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#00AA00] to-[#00CC66] hover:from-[#008800] hover:to-[#00AA55] text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#00AA00] focus:ring-opacity-50"
           >
-            去投票 / Undi Sekarang
+            Go vote / Undi Sekarang
           </button>
           <button
             onClick={() => router.push("/result")}
             className="cursor-pointer px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#6600CC] to-[#AA00FF] hover:from-[#5500AA] hover:to-[#8800DD] text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#6600CC] focus:ring-opacity-50"
           >
-            投票结果 / Keputusan Undian
+            Voting results / Keputusan Undian
           </button>
           <button
             onClick={() => router.push("/votelog")}
             className="cursor-pointer px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#010066] to-[#FFCC00] hover:from-[#00004d] hover:to-[#e6b800] text-white text-xs sm:text-sm font-medium rounded-lg sm:rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#010066] focus:ring-opacity-50"
           >
-            投票记录 / Rekod Undian
+            Voting Records / Rekod Undian
           </button>
         </div>
 

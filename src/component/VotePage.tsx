@@ -47,7 +47,7 @@ export default function VotePage() {
 
         setCandidates(parsed);
       } catch (err) {
-        console.error("获取候选人失败", err);
+        console.error("Failed to get candidates", err);
       }
     };
 
@@ -64,7 +64,7 @@ export default function VotePage() {
 
     try {
       const ic = localStorage.getItem("icNumber");
-      if (!ic) throw new Error("找不到您的 IC 号码，请先登录");
+      if (!ic) throw new Error("Can't find your IC number, please log in first");
 
       const res = await authFetch(`${API_URL}/vote`, {
         method: "POST",
@@ -78,13 +78,13 @@ export default function VotePage() {
       }
 
       const data = await res.json();
-      setMessage(`✅ 投票成功！交易哈希：${data.txHash}`);
+      setMessage(`✅ Voting successful! Transaction hash：${data.txHash}`);
       setStatus("success");
 
       setVoteStatusMap((prev) => ({ ...prev, [index]: "success" }));
       setHasVoted(true);
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : "发生未知错误";
+      const errMsg = err instanceof Error ? err.message : "An unknown error occurred";
       setMessage("❌ " + errMsg);
       setStatus("error");
       setVoteStatusMap((prev) => ({ ...prev, [index]: "default" }));
@@ -119,7 +119,7 @@ export default function VotePage() {
               </div>
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-[#010066]">
-              <span className="text-[#CC0000]">投票页面</span>
+              <span className="text-[#CC0000]">voting page</span>
             </h1>
           </div>
           <p className="text-sm sm:text-base text-gray-600">
@@ -130,7 +130,7 @@ export default function VotePage() {
         {walletAddress && (
           <div className="bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-md border border-[#D4AF37]/30 mb-6">
             <p className="text-xs sm:text-sm text-[#010066] font-medium">
-              当前钱包地址
+              Current wallet address
             </p>
             <p className="text-xs sm:text-sm text-blue-700 break-all mt-1">
               {walletAddress}

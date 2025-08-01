@@ -36,7 +36,7 @@ export default function BlockChainList() {
         setBlocks(safeData);
       } catch (err) {
         console.error("Error authFetching blocks:", err);
-        setError("❌ 无法获取区块数据");
+        setError("❌ Unable to obtain block data");
       } finally {
         setLoading(false);
       }
@@ -53,7 +53,7 @@ export default function BlockChainList() {
             <div className="w-10 h-10 rounded-full bg-[#CC0000]"></div>
           </div>
         </div>
-        <p className="text-[#010066]">加载中...</p>
+        <p className="text-[#010066]">loading...</p>
       </div>
     </div>
   );
@@ -90,7 +90,7 @@ export default function BlockChainList() {
               </div>
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-[#010066]">
-              <span className="text-[#CC0000]">区块链结构</span>
+              <span className="text-[#CC0000]">Blockchain structure</span>
             </h1>
           </div>
           <p className="text-sm sm:text-base text-gray-600">
@@ -107,36 +107,36 @@ export default function BlockChainList() {
             >
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
                 <div>
-                  <p className="text-xs sm:text-sm text-[#010066] font-medium">区块高度</p>
+                  <p className="text-xs sm:text-sm text-[#010066] font-medium">block height</p>
                   <p className="text-sm sm:text-base">#{block.number ?? "未知"}</p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-[#010066] font-medium">时间戳</p>
+                  <p className="text-xs sm:text-sm text-[#010066] font-medium">Timestamp</p>
                   <p className="text-sm sm:text-base">
                     {isNaN(Number(block.timestamp))
-                      ? "无效时间"
+                      ? "invalid time"
                       : new Date(Number(block.timestamp) * 1000).toLocaleString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-[#010066] font-medium">交易数量</p>
+                  <p className="text-xs sm:text-sm text-[#010066] font-medium">Transaction quantity</p>
                   <p className="text-sm sm:text-base">{block.txCount ?? "未知"}</p>
                 </div>
               </div>
 
               <div className="mt-3 sm:mt-4">
-                <p className="text-xs sm:text-sm text-[#010066] font-medium">区块哈希</p>
+                <p className="text-xs sm:text-sm text-[#010066] font-medium">block hash</p>
                 <p className="text-xs sm:text-sm text-gray-700 break-all">{block.hash || "无"}</p>
               </div>
 
               <div className="mt-2">
-                <p className="text-xs sm:text-sm text-[#010066] font-medium">父区块哈希</p>
+                <p className="text-xs sm:text-sm text-[#010066] font-medium">Parent block hash</p>
                 <p className="text-xs sm:text-sm text-gray-700 break-all">{block.parentHash || "无"}</p>
               </div>
 
               {block.txs && block.txs.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-xs sm:text-sm text-[#010066] font-medium">交易列表</p>
+                  <p className="text-xs sm:text-sm text-[#010066] font-medium">transaction list</p>
                   <ul className="mt-1 space-y-1">
                     {block.txs.map((tx) => (
                       <li 

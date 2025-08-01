@@ -53,7 +53,7 @@ export default function ResultPage() {
 
         setResults(parsed);
       } catch (err) {
-        console.error("读取投票结果失败", err);
+        console.error("Failed to read voting results", err);
       } finally {
         setLoading(false);
       }
@@ -81,7 +81,7 @@ export default function ResultPage() {
               </div>
             </div>
             <h1 className="text-lg sm:text-2xl font-bold text-[#010066]">
-              <span className="text-[#CC0000]">投票结果</span>
+              <span className="text-[#CC0000]">Voting results</span>
             </h1>
           </div>
           <p className="text-xs sm:text-base text-gray-600">Keputusan Undian</p>
@@ -93,7 +93,7 @@ export default function ResultPage() {
             <div className="flex flex-col items-center justify-center py-6 sm:py-8">
               <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-[#010066] border-t-[#FFCC00] rounded-full animate-spin mb-3 sm:mb-4"></div>
               <p className="text-sm sm:text-base text-[#010066]">
-                加载中 / Memuatkan...
+                loading / Memuatkan...
               </p>
             </div>
           ) : results.length > 0 ? (
@@ -120,7 +120,7 @@ export default function ResultPage() {
             </>
           ) : (
             <p className="text-center py-6 sm:py-8 text-sm sm:text-base text-gray-600">
-              暂无投票数据 / Tiada data undian
+              No voting data yet / Tiada data undian
             </p>
           )}
         </div>

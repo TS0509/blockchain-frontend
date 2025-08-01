@@ -25,7 +25,7 @@ export default function VoteStatsChart({ blocks }: Props) {
 
   return (
     <div className="p-4 bg-white rounded-xl shadow">
-      <h2 className="text-xl font-bold mb-2">📊 候选人投票数</h2>
+      <h2 className="text-xl font-bold mb-2">📊 Candidate votes</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />

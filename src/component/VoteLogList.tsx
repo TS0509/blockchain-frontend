@@ -54,25 +54,25 @@ export default function VoteLogList() {
 
   const totalPages = Math.ceil(total / pageSize);
 
-  if (loading) return <p className="text-center mt-10">加载中...</p>;
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
   return (
     <div className="max-w-4xl mx-auto mt-10 space-y-6">
-      <h2 className="text-2xl font-bold text-center text-[#010066]">投票记录</h2>
+      <h2 className="text-2xl font-bold text-center text-[#010066]">voting record</h2>
 
       {logs.length === 0 ? (
-        <p className="text-center text-gray-500">暂无记录</p>
+        <p className="text-center text-gray-500">No record yet</p>
       ) : (
         logs.map((log, idx) => (
           <div
             key={idx}
             className="p-4 bg-white rounded-lg shadow border border-gray-200"
           >
-            <p><strong>投票人:</strong> {log.voter}</p>
-            <p><strong>候选人编号:</strong> {log.candidateIndex}</p>
-            <p><strong>区块编号:</strong> {log.blockNumber}</p>
-            <p className="break-all"><strong>交易哈希:</strong> {log.txHash}</p>
+            <p><strong>Voter:</strong> {log.voter}</p>
+            <p><strong>Candidate number:</strong> {log.candidateIndex}</p>
+            <p><strong>block number:</strong> {log.blockNumber}</p>
+            <p className="break-all"><strong>transaction hash:</strong> {log.txHash}</p>
           </div>
         ))
       )}
@@ -84,17 +84,17 @@ export default function VoteLogList() {
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
           disabled={page === 1}
         >
-          上一页
+          Previous page
         </button>
         <span className="text-gray-700">
-          第 <strong>{page}</strong> 页 / 共 <strong>{totalPages}</strong> 页
+          the <strong>{page}</strong> page / total <strong>{totalPages}</strong> page
         </span>
         <button
           className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
           onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
           disabled={page >= totalPages}
         >
-          下一页
+          Next page
         </button>
       </div>
     </div>

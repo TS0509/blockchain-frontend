@@ -11,7 +11,7 @@ function decodeJwtPayload(token: string) {
     const decoded = JSON.parse(atob(payloadBase64));
     return decoded;
   } catch (e) {
-    console.error("❌ JWT Payload 无法解析", e);
+    console.error("❌ JWT Payload cannot be parsed", e);
     return null;
   }
 }
