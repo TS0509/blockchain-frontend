@@ -197,7 +197,7 @@ const RegisterForm = () => {
                 Registering...
               </>
             ) : (
-              "注册 / Daftar"
+              "Register / Daftar"
             )}
           </button>
 

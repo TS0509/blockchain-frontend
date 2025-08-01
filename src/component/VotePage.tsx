@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CandidateCard from "@/component/CandidateCard";
 import useAuthGuard from "@/hook/useAuthGuard";
@@ -25,13 +25,13 @@ export default function VotePage() {
   const [walletAddress, setWalletAddress] = useState("");
   const [hasVoted, setHasVoted] = useState(false);
   useAuthGuard();
+  const router = useRouter();
 
   type CandidateResponse = {
-  name: string;
-  index: number;
-  avatar?: string;
-};
-
+    name: string;
+    index: number;
+    avatar?: string;
+  };
 
   useEffect(() => {
     const fetchFromBackend = async () => {
@@ -64,7 +64,8 @@ export default function VotePage() {
 
     try {
       const ic = localStorage.getItem("icNumber");
-      if (!ic) throw new Error("Can't find your IC number, please log in first");
+      if (!ic)
+        throw new Error("Can't find your IC number, please log in first");
 
       const res = await authFetch(`${API_URL}/vote`, {
         method: "POST",
@@ -84,7 +85,8 @@ export default function VotePage() {
       setVoteStatusMap((prev) => ({ ...prev, [index]: "success" }));
       setHasVoted(true);
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : "An unknown error occurred";
+      const errMsg =
+        err instanceof Error ? err.message : "An unknown error occurred";
       setMessage("❌ " + errMsg);
       setStatus("error");
       setVoteStatusMap((prev) => ({ ...prev, [index]: "default" }));
@@ -109,7 +111,12 @@ export default function VotePage() {
         <div className="absolute top-1/3 left-0 w-full h-1/3 bg-white"></div>
         <div className="absolute top-2/3 left-0 w-full h-1/3 bg-[#010066]"></div>
       </div>
-
+      <button
+        onClick={() => router.push("/home")}
+        className="fixed top-4 left-4 z-20 bg-white/80 text-blue-700 px-4 py-2 rounded-xl shadow hover:bg-white/100 transition"
+      >
+        ← Home
+      </button>
       <div className="relative z-10 max-w-4xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8">
           <div className="flex items-center mb-4 sm:mb-0">

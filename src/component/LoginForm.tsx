@@ -67,13 +67,13 @@ export default function LoginForm() {
     }
 
     setLoading(true);
-    setMessage("📷 打开摄像头准备中...");
+    setMessage("📷 Opening the camera and getting ready...");
     setStatus("default");
 
     try {
       const base64 = await startCountdownAndCapture();
 
-      setMessage("🔍 正在检测人脸...");
+      setMessage("🔍 Detecting faces...");
       const hasFace = await detectFace(base64);
       if (!hasFace) {
         setStatus("error");
