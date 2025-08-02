@@ -10,6 +10,8 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { db, storage } from "@/utils/firebaseConfig";
 import { detectFace } from "@/utils/faceAPI";
+import { compareFaces } from "@/utils/faceAPI";
+import { collection, getDocs } from "firebase/firestore";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
@@ -35,6 +37,27 @@ const RegisterForm = () => {
       default:
         return "text-gray-700";
     }
+  };
+
+  const isDuplicateFace = async (base64Image: string): Promise<boolean> => {
+    const snapshot = await getDocs(collection(db, "users"));
+
+    for (const docSnap of snapshot.docs) {
+      const data = docSnap.data();
+      if (!data.faceImageUrl) continue;
+
+      try {
+        const similarity = await compareFaces(base64Image, data.faceImageUrl);
+        console.log(`Compared with ${docSnap.id}, confidence: ${similarity}`);
+        if (similarity > 85) {
+          return true;
+        }
+      } catch (e) {
+        console.warn("Face comparison error:", e);
+      }
+    }
+
+    return false;
   };
 
   const blobToBase64 = (blob: Blob): Promise<string> =>
@@ -75,6 +98,11 @@ const RegisterForm = () => {
       throw new Error(
         "⚠️ No valid face was detected. Please try again facing the camera."
       );
+    }
+
+    const isDuplicate = await isDuplicateFace(base64);
+    if (isDuplicate) {
+      throw new Error("⚠️ This face has already been registered.");
     }
 
     // 先注册后端
