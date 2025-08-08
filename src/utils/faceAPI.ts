@@ -1,6 +1,6 @@
 // utils/faceAPI.ts
-export const FACE_API_KEY = 'rRTC3O8cReDrE0uUcC_s9wwTPiYh9LQb';
-export const FACE_API_SECRET = 'RA2sjRKGKg_tL92gPWU4amrgAQ5vnvX0';
+export const FACE_API_KEY = process.env.NEXT_PUBLIC_FACE_API_KEY!;
+export const FACE_API_SECRET = process.env.NEXT_PUBLIC_FACE_API_SECRET!;
 
 const BASE_URL = 'https://api-us.faceplusplus.com/facepp/v3';
 

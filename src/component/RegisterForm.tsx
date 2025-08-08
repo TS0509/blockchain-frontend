@@ -49,7 +49,7 @@ const RegisterForm = () => {
       try {
         const similarity = await compareFaces(base64Image, data.faceImageUrl);
         console.log(`Compared with ${docSnap.id}, confidence: ${similarity}`);
-        if (similarity > 85) {
+        if (similarity > 80) {
           return true;
         }
       } catch (e) {
